@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perfil — NexoAcadémico</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/global.css" />
+<link rel="stylesheet" href="css/dashboard.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+<link rel="stylesheet" href="css/dark-mode.css" />
+</head>
+<body>
+<div id="app-shell"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/ui-shell.js"></script>
+<script src="js/buscador.js"></script>
+<script>
+(async () => {
+  const auth = await window.AppAuth.requireAuth();
+  if (!auth) return;
+  renderShell({ profile: auth.profile, activeLink: "perfil" });
+
+  const { count: favCount } = await sb.from("favorites")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", auth.session.user.id);
+
+  document.getElementById("page-content").innerHTML = `
+    <h1 class="page-title">Mi perfil</h1>
+    <div class="profile-card">
+      <div class="avatar avatar-lg">${auth.profile.email.charAt(0).toUpperCase()}</div>
+      <div>
+        <h2>${auth.profile.email}</h2>
+        <p class="badge ${auth.profile.role === "admin" ? "badge-admin" : "badge-student"}">
+          ${auth.profile.role === "admin" ? "Administrador" : "Estudiante"}
+        </p>
+        <p class="page-subtitle">Miembro desde ${new Date(auth.profile.created_at).toLocaleDateString()}</p>
+        <p class="page-subtitle">${favCount || 0} elementos favoritos</p>
+      </div>
+    </div>
+  `;
+})();
+</script>
+</body>
+</html>

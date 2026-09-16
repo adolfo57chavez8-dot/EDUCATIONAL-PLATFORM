@@ -1,0 +1,33 @@
+/* responsive.css — adaptación a tablet y móvil (prioridad Android) */
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main-area { margin-left: 0; }
+  .mobile-nav {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: 62px;
+    background: var(--surface); border-top: 1px solid var(--border); z-index: 40;
+    justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mobile-link {
+    display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px;
+    color: var(--text-muted); font-weight: 600; flex: 1; padding: 6px 0;
+  }
+  .mobile-link .icon { width: 20px; height: 20px; }
+  .mobile-link.active { color: var(--primary); }
+  .page-content { padding: 18px 16px 84px; }
+  .topbar { padding: 0 16px; }
+  .search-box { max-width: none; }
+  .search-results { left: 16px; width: calc(100vw - 32px); top: 60px; }
+  .profile-email { display: none; }
+  .admin-form { max-width: 100%; }
+  .cards-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .video-grid { grid-template-columns: 1fr; }
+  .pdf-frame { height: 60vh; }
+}
+
+@media (max-width: 480px) {
+  .page-title { font-size: 21px; }
+  .auth-card { padding: 26px 20px; }
+  .file-entry { flex-direction: column; align-items: flex-start; }
+  .data-table th, .data-table td { padding: 10px; font-size: 13px; }
+}

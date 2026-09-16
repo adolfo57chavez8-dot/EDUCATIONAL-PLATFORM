@@ -1,0 +1,21 @@
+/* dark-mode.css — tema oscuro, activado con html.dark */
+
+html.dark {
+  --bg: #0f1020;
+  --surface: #171833;
+  --surface-alt: #1f2140;
+  --border: #2b2d52;
+  --text: #eceefb;
+  --text-muted: #9294bd;
+  --primary: #6366f1;
+  --primary-dark: #818cf8;
+  --primary-soft: #23244a;
+  --accent: #2dd4c4;
+  --shadow: 0 2px 10px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.55);
+}
+html.dark .btn-danger { background: #3a1f22; color: #f87171; }
+html.dark .badge-admin { background: #3a2a14; color: #fb923c; }
+html.dark .badge-student { background: var(--primary-soft); color: #a5b4fc; }
+html.dark .avatar { color: #fff; }
+html.dark .video-embed-wrapper { background: #000; }

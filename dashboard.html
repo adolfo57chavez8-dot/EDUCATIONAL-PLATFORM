@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inicio — NexoAcadémico</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/global.css" />
+<link rel="stylesheet" href="css/dashboard.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+<link rel="stylesheet" href="css/dark-mode.css" />
+</head>
+<body>
+<div id="app-shell"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/ui-shell.js"></script>
+<script src="js/buscador.js"></script>
+<script src="js/ciclos.js"></script>
+<script>
+(async () => {
+  const auth = await window.AppAuth.requireAuth();
+  if (!auth) return;
+  renderShell({ profile: auth.profile, activeLink: "dashboard" });
+  await loadDashboard(auth.profile);
+})();
+</script>
+</body>
+</html>
