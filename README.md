@@ -10,6 +10,58 @@ No usa Firebase, no usa Node.js para servir archivos, no usa Firebase Storage.
 
 ---
 
+## 0. Si vienes de una versión anterior: qué corregir en Supabase
+
+Si ya tenías el proyecto desplegado y no podías **editar ciclos/materias/unidades**
+ni **subir archivos** desde `/admin`, casi siempre es por las políticas RLS.
+Vuelve a correr el `database.sql` que viene con esta entrega (Supabase → SQL Editor
+→ pega el archivo completo → Run). Es seguro volver a correrlo, no duplica datos.
+Soluciona:
+
+- Políticas de escritura (`insert/update/delete`) para admin en `cycles`,
+  `subjects`, `units`, `files`, `videos` — si faltaban o estaban mal escritas,
+  Supabase simplemente rechazaba el guardado sin que el panel te avisara.
+- El bucket `academic-files` y sus políticas de Storage (lectura pública,
+  escritura solo admin) — sin esto, la subida de archivos falla siempre.
+- Los formularios de Ciclos/Materias/Unidades ahora sí muestran una alerta
+  con el mensaje de error real de Supabase si algo falla al guardar (antes
+  fallaban en silencio).
+
+### Los códigos de acceso no llegan al correo
+
+Esto casi siempre es una de estas dos causas, no un error del código:
+
+1. **La plantilla de correo de Supabase envía un enlace, no un código.**
+   Ve a Supabase → **Authentication → Email Templates → Magic Link** y
+   asegúrate de que el cuerpo del correo use `{{ .Token }}` (el código de
+   6 dígitos) en vez de solo `{{ .ConfirmationURL }}`. Puedes usar algo así:
+   ```
+   Tu código de acceso a NexoAcadémico es: {{ .Token }}
+   ```
+2. **El correo del proveedor gratuito de Supabase cae en spam o se agota
+   el límite de envíos** (el SMTP incluido de Supabase es solo para pruebas
+   y limita a pocos correos por hora). Para producción, configura tu propio
+   SMTP en **Authentication → Settings → SMTP Settings** (por ejemplo Resend,
+   Brevo o SendGrid, todos tienen plan gratuito). Revisa también la carpeta
+   de spam mientras tanto.
+
+Cada vez que un usuario pide iniciar sesión, Supabase invalida el código
+anterior y genera uno nuevo automáticamente — eso ya funciona así en el
+código (`requestAccessCode` en `js/auth.js`), no requiere ningún cambio.
+
+### Sobre quién es administrador
+
+Solo `adolfo57chavez8@gmail.com` recibe el rol `admin` (lo asigna un trigger
+en `database.sql` al momento de registrarse, y además hay un backfill para
+usuarios ya existentes). Con esa cuenta entras tanto al panel `/admin` como
+al área normal de estudio — puedes navegar, marcar favoritos y también subir
+archivos, exactamente igual que cualquier estudiante, además de administrar.
+Cualquier otro correo que se registre queda como `student` automáticamente
+y nunca ve el enlace "Panel admin" ni puede escribir en la base de datos
+(las políticas RLS lo bloquean aunque intente llamar a la API directamente).
+
+---
+
 ## 1. Estructura del proyecto
 
 ```

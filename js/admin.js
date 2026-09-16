@@ -142,7 +142,8 @@ async function loadAdminCiclos() {
       });
       if (delBtn) delBtn.addEventListener("click", async () => {
         if (!confirm(`¿Eliminar el ciclo "${c.name}"? Esto también eliminará sus materias.`)) return;
-        await sb.from("cycles").delete().eq("id", c.id);
+        const { error } = await sb.from("cycles").delete().eq("id", c.id);
+        if (error) { alert("No se pudo eliminar: " + error.message); return; }
         refresh();
       });
     });
@@ -156,10 +157,12 @@ async function loadAdminCiclos() {
       description: document.getElementById("ciclo-desc").value.trim() || null,
       order_index: Number(document.getElementById("ciclo-order").value)
     };
-    if (id) {
-      await sb.from("cycles").update(payload).eq("id", id);
-    } else {
-      await sb.from("cycles").insert(payload);
+    const { error } = id
+      ? await sb.from("cycles").update(payload).eq("id", id)
+      : await sb.from("cycles").insert(payload);
+    if (error) {
+      alert("No se pudo guardar el ciclo: " + error.message);
+      return;
     }
     form.reset();
     document.getElementById("ciclo-id").value = "";
@@ -222,7 +225,8 @@ async function loadAdminMaterias() {
       });
       if (delBtn) delBtn.addEventListener("click", async () => {
         if (!confirm(`¿Eliminar la materia "${m.name}"? Esto también eliminará sus unidades.`)) return;
-        await sb.from("subjects").delete().eq("id", m.id);
+        const { error } = await sb.from("subjects").delete().eq("id", m.id);
+        if (error) { alert("No se pudo eliminar: " + error.message); return; }
         refresh();
       });
     });
@@ -237,8 +241,13 @@ async function loadAdminMaterias() {
       description: document.getElementById("materia-desc").value.trim() || null,
       order_index: Number(document.getElementById("materia-order").value)
     };
-    if (id) await sb.from("subjects").update(payload).eq("id", id);
-    else await sb.from("subjects").insert(payload);
+    const { error } = id
+      ? await sb.from("subjects").update(payload).eq("id", id)
+      : await sb.from("subjects").insert(payload);
+    if (error) {
+      alert("No se pudo guardar la materia: " + error.message);
+      return;
+    }
     form.reset();
     document.getElementById("materia-id").value = "";
     cancelBtn.classList.add("hidden");
@@ -307,7 +316,8 @@ async function loadAdminUnidades() {
       });
       if (delBtn) delBtn.addEventListener("click", async () => {
         if (!confirm(`¿Eliminar la unidad "${u.title}"? Esto también eliminará sus archivos y videos.`)) return;
-        await sb.from("units").delete().eq("id", u.id);
+        const { error } = await sb.from("units").delete().eq("id", u.id);
+        if (error) { alert("No se pudo eliminar: " + error.message); return; }
         refresh();
       });
     });
@@ -322,8 +332,13 @@ async function loadAdminUnidades() {
       description: document.getElementById("unidad-desc").value.trim() || null,
       order_index: Number(document.getElementById("unidad-order").value)
     };
-    if (id) await sb.from("units").update(payload).eq("id", id);
-    else await sb.from("units").insert(payload);
+    const { error } = id
+      ? await sb.from("units").update(payload).eq("id", id)
+      : await sb.from("units").insert(payload);
+    if (error) {
+      alert("No se pudo guardar la unidad: " + error.message);
+      return;
+    }
     form.reset();
     document.getElementById("unidad-id").value = "";
     cancelBtn.classList.add("hidden");
